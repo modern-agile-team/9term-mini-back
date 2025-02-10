@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
-    secret: "인스타클론비밀키",
+    secret: "instargramuserkey",
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false },
