@@ -11,10 +11,10 @@ class User {
     const { user } = this.body;
     try {
       const { email, pwd } = await userStorage.getUserInfo(user.email);
-      console.log(email);
       if (email) {
         if (email === user.email && pwd === user.pwd) {
-          return { success: true };
+          //조건이 참일 경우 true, email과 pwd값을 반환함.
+          return { success: true, email: email, pwd: pwd };
         } else {
           return { success: false, msg: "비밀번호를 다시 입력해주세요." };
         }
