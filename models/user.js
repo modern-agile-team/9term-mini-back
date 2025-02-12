@@ -1,6 +1,7 @@
 "use strict";
 
 const userStorage = require("../storages/userStorage");
+const bcrypt = require("bcrypt");
 
 class User {
   constructor(body) {
@@ -16,7 +17,9 @@ class User {
         return { success: false, msg: "존재하지 않는 이메일입니다." };
       }
 
-      if (userData.pwd !== pwd) {
+      // 비밀번호 해싱 비교
+      const isPasswordValid = await bcrypt.compare(pwd, userData.pwd);
+      if (!isPasswordValid) {
         return { success: false, msg: "비밀번호를 다시 입력해주세요." };
       }
 
@@ -29,7 +32,15 @@ class User {
   async register() {
     const { email, pwd, profile_image } = this.body;
     try {
-      const response = await userStorage.createUser(email, pwd, profile_image); // DB에 사용자 저장
+      // 비밀번호 해싱
+      const hashedPwd = await bcrypt.hash(pwd, 10); // saltRounds = 10
+
+      // DB에 사용자 저장
+      const response = await userStorage.createUser(
+        email,
+        hashedPwd,
+        profile_image
+      );
 
       if (response.success) {
         return { success: true, msg: "회원가입이 완료되었습니다." };

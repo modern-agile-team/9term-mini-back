@@ -11,25 +11,24 @@ const sendResponse = (res, statusCode, success, message, data = null) => {
 };
 
 const logout = (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      console.error("Logout error:", err);
-      return sendResponse(res, 500, false, "로그아웃 실패");
-    }
-    res.clearCookie("connect.sid");
-    return sendResponse(res, 200, true, "로그아웃 성공");
-  });
+  if (req.session) {
+    req.session.destroy((err) => {
+      if (err) {
+        console.error("Logout error:", err);
+        return sendResponse(res, 500, false, "로그아웃 실패");
+      }
+      res.clearCookie("connect.sid", { path: "/" });
+      return sendResponse(res, 200, true, "로그아웃 성공");
+    });
+  } else {
+    return sendResponse(res, 200, true, "이미 로그아웃 상태입니다.");
+  }
 };
 
 const login = async (req, res) => {
-  console.log("DB_HOST:", process.env.DB_HOST);
-  console.log("DB_USER:", process.env.DB_USER);
-  console.log("DB_PW:", process.env.DB_PW ? "******" : "NOT SET");
-  console.log("DB_DATABASE:", process.env.DB_DATBASE);
   try {
     const { email, pwd } = req.body;
 
-    // 입력값 검증
     if (!email || !pwd) {
       return sendResponse(res, 400, false, "이메일과 비밀번호는 필수입니다.");
     }
@@ -38,21 +37,17 @@ const login = async (req, res) => {
     const response = await user.login();
 
     if (!response.success) {
-      return sendResponse(res, 401, false, response.message || "로그인 실패");
+      return sendResponse(res, 401, false, response.msg || "로그인 실패");
     }
 
-    // 이메일에서 사용자 이름 생성
-    const userName = response.email.split("@")[0];
-
-    // 세션에 사용자 정보 저장 (비밀번호 제외)
+    // 세션에 최소한의 사용자 정보만 저장
     req.session.user = {
+      id: response.id,
       email: response.email,
-      userName,
     };
-    console.log(req.session);
 
     return sendResponse(res, 200, true, "로그인 성공", {
-      user: req.session.user,
+      user: { email: response.email },
     });
   } catch (err) {
     console.error("Login error:", err);
@@ -63,12 +58,9 @@ const login = async (req, res) => {
 const register = async (req, res) => {
   try {
     const { email, pwd } = req.body;
-    // 입력값 검증
     if (!email || !pwd) {
       return sendResponse(res, 400, false, "이메일과 비밀번호는 필수입니다.");
     }
-
-    // 이메일 중복 체크
 
     const existingUser = await UserStorage.getUserByEmail(email);
     if (existingUser) {
@@ -80,7 +72,7 @@ const register = async (req, res) => {
 
     if (response.success) {
       return sendResponse(res, 201, true, "회원가입 성공", {
-        user: response.user,
+        user: { email: response.user.email },
       });
     } else {
       return sendResponse(res, 400, false, response.message || "회원가입 실패");
