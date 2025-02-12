@@ -1,12 +1,13 @@
 "use strict";
 
 const express = require("express");
+const app = express();
 const bodyParser = require("body-parser");
+const dotenv = require("dotenv");
+dotenv.config();
 const router = require("./routes/index");
 const session = require("express-session");
 const isAuthenticated = require("./middlewares/auth"); // 로그인 여부 미들웨어 함수
-
-const app = express();
 
 app.set("view engine", "ejs");
 app.set("views", "./views");
@@ -18,7 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
-    secret: "인스타클론비밀키",
+    secret: "instargramuserkey",
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false },

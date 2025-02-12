@@ -3,20 +3,13 @@
 const express = require("express");
 
 const router = express.Router();
-const ctrl = require("../controllers/logout.ctrl");
+const userCtrl = require("../controllers/user");
 const isAuthenticated = require("../middlewares/auth"); // 로그인 여부 미들웨어 함수
 
 // router.get("/api/posts", isAuthenticated, ctrl.post);
-router.post("/api/login", (req, res) => {
-  const { username, password } = req.body;
-  if (username === "user" && password === "password") {
-    req.session.user = { username };
-    res.json({ message: "로그인 성공", user: { username } });
-  } else {
-    res.status(401).json({ message: "로그인 실패" });
-  }
-});
+router.get("/api/login", userCtrl.login);
 
-router.post("/api/logout", ctrl.logout);
+router.post("/api/register", userCtrl.register);
+router.post("/api/logout", userCtrl.logout);
 
 module.exports = router;
