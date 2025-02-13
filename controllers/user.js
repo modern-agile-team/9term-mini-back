@@ -9,7 +9,6 @@ const sendResponse = (res, statusCode, success, message, data = null) => {
   if (data) response.data = data;
   return res.status(statusCode).json(response);
 };
-
 const logout = (req, res) => {
   if (req.session) {
     req.session.destroy((err) => {
@@ -40,10 +39,9 @@ const login = async (req, res) => {
       return sendResponse(res, 401, false, response.msg || "로그인 실패");
     }
 
-    // 세션에 최소한의 사용자 정보만 저장
     req.session.user = {
       id: response.id,
-      email: response.email,
+      name: response.name,
     };
 
     return sendResponse(res, 200, true, "로그인 성공", {
@@ -71,9 +69,7 @@ const register = async (req, res) => {
     const response = await user.register();
 
     if (response.success) {
-      return sendResponse(res, 201, true, "회원가입 성공", {
-        user: { email: response.user.email },
-      });
+      return sendResponse(res, 201, true, "회원가입 성공");
     } else {
       return sendResponse(res, 400, false, response.message || "회원가입 실패");
     }
