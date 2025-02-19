@@ -40,7 +40,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === "production", // production 환경에서만 secure 쿠키 사용
+      secure: process.env.NODE_ENV === "development", // production 환경에서만 secure 쿠키 사용
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24, // 24시간
     },
