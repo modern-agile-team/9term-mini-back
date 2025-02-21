@@ -14,17 +14,7 @@ const isAuthenticated = require("./middlewares/auth"); // 로그인 여부 미�
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "http://127.0.0.1:5173",
-      "https://modern9.netlify.app",
-    ],
-    method: "GET, POST, PUT, DELETE, OPTIONS",
-    // credentials: true,
-  })
-);
+app.use(cors());
 
 // MySQL 세션 스토어 옵션
 const options = {
