@@ -4,6 +4,7 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
+const cors = require("cors");
 dotenv.config();
 
 const router = require("./routes/index");
@@ -11,14 +12,18 @@ const session = require("express-session");
 const MySQLStore = require("express-mysql-session")(session);
 const isAuthenticated = require("./middlewares/auth"); // 로그인 여부 미들웨어 함수
 
-app.set("view engine", "ejs");
-app.set("views", "./views");
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "http://127.0.0.1:3000",
+      "https://modern9.netlify.app/",
+    ],
+    credentials: true,
+  })
+);
 
 // MySQL 세션 스토어 옵션
 const options = {
