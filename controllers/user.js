@@ -45,7 +45,6 @@ const login = async (req, res) => {
     };
 
     req.session.save((err) => {
-      console.log("세션 보내기 성공");
       if (err) {
         console.error("Session save error:", err);
         return sendResponse(
