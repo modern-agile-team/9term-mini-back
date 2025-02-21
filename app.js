@@ -12,9 +12,13 @@ const session = require("express-session");
 const MySQLStore = require("express-mysql-session")(session);
 const isAuthenticated = require("./middlewares/auth"); // 로그인 여부 미들웨어 함수
 
+app.use(
+  cors({
+    origin: ["localhost:5173", "modern9.netlify.app"],
+  })
+);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
 
 // MySQL 세션 스토어 옵션
 const options = {
