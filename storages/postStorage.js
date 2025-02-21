@@ -4,7 +4,7 @@ class PostStorage {
     // 게시물 생성
     static async createPost({ user_id, content, post_img }) {
         try {
-            const query = `INSERT INTO posts (user_id, content, post_img, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())`;
+            const query = `INSERT INTO posts (user_id, content, post_img, created_at) VALUES (?, ?, ?, NOW())`;
             const [result] = await db.execute(query, [user_id, content, post_img]);
             return result.insertId;
         } catch (err) {
@@ -20,8 +20,7 @@ class PostStorage {
             posts.content,
             posts.post_img, 
             posts.created_at, 
-            users.name AS author, 
-            IFNULL(users.profile_image, 'http://~~~') AS profile_image 
+            users.name AS author
             FROM posts
             JOIN users ON posts.user_id = users.id
             ORDER BY posts.created_at DESC;`
@@ -33,7 +32,8 @@ class PostStorage {
             throw new Error("게시물 조회 중 오류가 발생했습니다.");
         }
     }
-    
+
+    // 게시물 수정
     static async updatePost (post_id, updates) {
         try { 
             const fields = [];
@@ -52,8 +52,9 @@ class PostStorage {
             }
 
             values.push(post_id);
-            const query = `UPDATE posts SET ${fields.join(", ")}, updated_at = NOW() WHERE id = ?`;
+            const query = `UPDATE posts SET ${fields.join(", ")} WHERE id = ?`;
             const [result] = await db.execute(query, values);
+
             return result.affectedRows > 0;
         } catch (err) {
             console.error("Database update error:", err);
@@ -66,7 +67,7 @@ class PostStorage {
         try {
             const query = `DELETE FROM posts WHERE id = ?`;
             const [result] = await db.execute(query, [post_id]);
-            return result.affectedRows > 0;
+            return result.affectedRows > 0; // 삭제된 게시물 확인
         } catch (err) {
             console.error("Database delete error:", err);
             throw new Error("게시물 삭제 중 오류가 발생했습니다.");

@@ -1,7 +1,6 @@
 "use strict";
 
 const Post = require("../models/Post");
-const PostStorage = require('../storages/postStorage');
 
 // 공통 응답 헬퍼 함수
 const sendResponse = (res, statusCode, success, message, data = null) => {
@@ -14,11 +13,11 @@ const sendResponse = (res, statusCode, success, message, data = null) => {
 const createPost = async (req, res) => {
     try {
         const { content, post_img } = req.body;
-        const post = new Post({ content, post_img });
+        const { user_id } = req; 
 
-        // req 객체를 createPost에 전달
-        const postData = await post.createPost(req);
-        const postId = await PostStorage.createPost(postData); // PostStorage에 저장
+        const post = new Post({ content, post_img }, user_id);
+
+        const postId = await post.createPost(); // createPost 호출 (Poststorage와 연결)
         
         return sendResponse(res, 201, true, "게시물 생성 성공", { post_id: postId });
     } catch (err) {
@@ -30,7 +29,7 @@ const createPost = async (req, res) => {
 // 모든 게시물 조회
 const getAllPosts = async (req, res) => {
     try {
-        const posts = await PostStorage.getAllPosts();
+        const posts = await Post.getAllPosts();
         return sendResponse(res, 200, true, "게시물 조회 성공", posts);
     } catch (err) {
         console.error("Get all posts error:", err);
@@ -43,14 +42,14 @@ const updatePost = async (req, res) => {
     try {
         const { id } = req.params; 
         const { content, post_img } = req.body;
+        const { user_id } = req;
 
         if (!id) {
             return sendResponse(res, 400, false, "post_id는 필수입니다.");
         }
 
-        const post = new Post({ content, post_img });
-        const postData = await post.updatePost(id);
-        const result = await PostStorage.updatePost(id, postData); // PostStorage에 저장
+        const post = new Post({ content, post_img }, user_id);
+        const result = await post.updatePost(id); // 저장
         
         if (result) {
             return sendResponse(res, 200, true, "게시물 수정 성공");
@@ -72,7 +71,8 @@ const deletePost = async (req, res) => {
             return sendResponse(res, 400, false, "post_id는 필수입니다.");
         }
 
-        const result = await PostStorage.deletePost(id);
+        const post = new Post({}, null);
+        const result = await post.deletePost(id);
 
         if (result) {
             return sendResponse(res, 200, true, "게시물 삭제 성공");
