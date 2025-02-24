@@ -34,7 +34,7 @@ class PostStorage {
     }
 
     // 게시물 수정
-    static async updatePost (post_id, updates) {
+    static async updatePost (post_id, user_id, updates) {
         try { 
             const fields = [];
             const values = [];
@@ -51,8 +51,8 @@ class PostStorage {
                 return true; // 아무 변경이 없어도 성공
             }
 
-            values.push(post_id);
-            const query = `UPDATE posts SET ${fields.join(", ")} WHERE id = ?`;
+            values.push(post_id, user_id);
+            const query = `UPDATE posts SET ${fields.join(", ")} WHERE id = ? AND user_id = ?`;
             const [result] = await db.execute(query, values);
 
             return result.affectedRows > 0;
@@ -63,10 +63,11 @@ class PostStorage {
     }
 
     // 게시물 삭제
-    static async deletePost(post_id) {
+    static async deletePost(post_id, user_id) {
         try {
-            const query = `DELETE FROM posts WHERE id = ?`;
-            const [result] = await db.execute(query, [post_id]);
+            const query = `DELETE FROM posts WHERE id = ? AND user_id = ?`;
+            const [result] = await db.execute(query, [post_id, user_id]);
+
             return result.affectedRows > 0; // 삭제된 게시물 확인
         } catch (err) {
             console.error("Database delete error:", err);

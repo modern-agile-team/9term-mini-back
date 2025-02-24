@@ -1,6 +1,7 @@
 "use strict";
 
 const Post = require("../models/Post");
+const { uploadBase64ImageToS3 } = require("../s3/s3Uploader");
 
 // 공통 응답 헬퍼 함수
 const sendResponse = (res, statusCode, success, message, data = null) => {
@@ -13,10 +14,16 @@ const sendResponse = (res, statusCode, success, message, data = null) => {
 const createPost = async (req, res) => {
     try {
         const { content, post_img } = req.body;
-        const { user_id } = req; 
-
-        const post = new Post({ content, post_img }, user_id);
-
+        const userId = req.session.user.id;    
+    
+        // S3에 업로드하고, 업로드된 이미지 URL을 반환
+        if (!post_img) {
+            return sendResponse(res, 400, false, "게시물 이미지는 필수입니다.");
+        }
+            
+        const imageUrl = await uploadBase64ImageToS3(post_img);
+      
+        const post = new Post({ content, post_img: imageUrl }, userId);
         const postId = await post.createPost(); // createPost 호출 (Poststorage와 연결)
         
         return sendResponse(res, 201, true, "게시물 생성 성공", { post_id: postId });
@@ -42,19 +49,20 @@ const updatePost = async (req, res) => {
     try {
         const { id } = req.params; 
         const { content, post_img } = req.body;
-        const { user_id } = req;
+        const userId = req.session.user.id;
 
-        if (!id) {
-            return sendResponse(res, 400, false, "post_id는 필수입니다.");
-        }
+        if (!id) return sendResponse(res, 400, false, "post_id는 필수입니다.");
+        if (!post_img) return sendResponse(res, 400, false, "게시물 이미지는 필수입니다.");
 
-        const post = new Post({ content, post_img }, user_id);
-        const result = await post.updatePost(id); // 저장
+        // 이미지 업로드
+        const imageUrl = await uploadBase64ImageToS3(post_img);
+
+        const result = await Post.updatePost(id, content, imageUrl, userId);
         
         if (result) {
             return sendResponse(res, 200, true, "게시물 수정 성공");
         } else {
-            return sendResponse(res, 400, false, "게시물 수정 실패");
+            return sendResponse(res, 403, false, "수정 권한이 없거나 게시물이 존재하지 않습니다.");
         }
     } catch (err) {
         console.error("Update post error:", err);
@@ -66,18 +74,16 @@ const updatePost = async (req, res) => {
 const deletePost = async (req, res) => {
     try {
         const { id } = req.params;
+        const userId = req.session.user.id;
 
-        if (!id) {
-            return sendResponse(res, 400, false, "post_id는 필수입니다.");
-        }
-
-        const post = new Post({}, null);
-        const result = await post.deletePost(id);
+        if (!id) return sendResponse(res, 400, false, "post_id는 필수입니다.");
+        
+        const result = await Post.deletePost(id, userId);
 
         if (result) {
             return sendResponse(res, 200, true, "게시물 삭제 성공");
         } else {
-            return sendResponse(res, 400, false, "게시물 삭제 실패");
+            return sendResponse(res, 403, false, "삭제 권한이 없거나 게시물이 존재하지 않습니다.");
         }
     } catch (err) {
         console.error("Delete post error:", err);
