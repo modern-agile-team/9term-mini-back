@@ -44,8 +44,19 @@ const login = async (req, res) => {
       name: response.name,
     };
 
-    return sendResponse(res, 200, true, "로그인 성공", {
-      user: { email: response.email },
+    req.session.save((err) => {
+      if (err) {
+        console.error("Session save error:", err);
+        return sendResponse(
+          res,
+          500,
+          false,
+          "세션 저장 중 오류가 발생했습니다."
+        );
+      }
+      return sendResponse(res, 200, true, "로그인 성공", {
+        user: { email: response.email },
+      });
     });
   } catch (err) {
     console.error("Login error:", err);

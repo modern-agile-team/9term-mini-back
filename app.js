@@ -4,20 +4,21 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
+const cors = require("cors");
 dotenv.config();
+
 const router = require("./routes/index");
 const session = require("express-session");
 const MySQLStore = require("express-mysql-session")(session);
 const isAuthenticated = require("./middlewares/auth"); // 로그인 여부 미들웨어 함수
 
-app.set("view engine", "ejs");
-app.set("views", "./views");
-
+app.use(
+  cors({
+    origin: ["localhost:5173", "modern9.netlify.app"],
+  })
+);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 // MySQL 세션 스토어 옵션
 const options = {
@@ -40,7 +41,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === "production", // production 환경에서만 secure 쿠키 사용
+      secure: process.env.NODE_ENV === "development", // production 환경에서만 secure 쿠키 사용
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24, // 24시간
     },
