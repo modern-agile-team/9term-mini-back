@@ -3,7 +3,6 @@
 const db = require("../config/db");
 
 class CommentStorage {
-  // 댓글 생성
   static async create(postId, userId, comment) {
     try {
       const query =
@@ -13,13 +12,12 @@ class CommentStorage {
 
       return { success: true, data: { id: result.insertId } };
     } catch (error) {
-      console.error("Database insert error:", error);
-      throw new Error("댓글 생성 중 데이터베이스 오류가 발생했습니다.");
+      console.error("댓글 생성 중 오류:", error);
+      throw error;
     }
   }
 
-  // 특정 게시물의 모든 댓글 조회
-  static async findAllByPostId(postId) {
+  static async getByPostId(postId) {
     try {
       const query =
         "SELECT * FROM comments WHERE post_id = ? ORDER BY created_at DESC";
@@ -35,12 +33,11 @@ class CommentStorage {
         updatedAt: row.updated_at,
       }));
     } catch (error) {
-      console.error("Database query error:", error);
-      throw new Error("댓글 조회 중 데이터베이스 오류가 발생했습니다.");
+      console.error("댓글 조회 중 오류:", error);
+      throw error;
     }
   }
 
-  // 댓글 삭제
   static async delete(commentId) {
     try {
       const query = "DELETE FROM comments WHERE id = ?";
@@ -53,8 +50,8 @@ class CommentStorage {
         return { success: false };
       }
     } catch (error) {
-      console.error("Database delete error:", error);
-      throw new Error("댓글 삭제 중 데이터베이스 오류가 발생했습니다.");
+      console.error("댓글 삭제 중 오류:", error);
+      throw error;
     }
   }
 }

@@ -1,7 +1,6 @@
 "use strict";
 
 const CommentStorage = require("../storages/commentStorage");
-
 class Comment {
   constructor(data) {
     this.data = data; // 요청 데이터를 저장
@@ -16,11 +15,11 @@ class Comment {
       if (response.success) {
         return { success: true, data: response.data };
       } else {
-        return { success: false };
+        return { success: false, message: "댓글 생성 실패" };
       }
     } catch (error) {
       console.error("댓글 생성 중 오류:", error);
-      return { success: false };
+      return { success: false, message: "댓글 생성 실패" };
     }
   }
 
@@ -41,7 +40,7 @@ class Comment {
       if (response.success) {
         return { success: true };
       } else {
-        return { success: false };
+        return { success: false, message: "댓글 삭제 실패" };
       }
     } catch (error) {
       console.error("댓글 삭제 중 오류:", error);

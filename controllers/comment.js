@@ -1,5 +1,4 @@
 "use strict";
-
 const Comment = require("../models/comment");
 
 // 공통 응답 헬퍼 함수
@@ -12,12 +11,19 @@ const sendResponse = (res, statusCode, success, message, data = null) => {
 class CommentController {
   static async createComment(req, res) {
     const { postId } = req.params;
-    const { userId, comment } = req.body;
+    const { comment } = req.body;
 
     try {
-      if (!postId || !userId || !comment) {
-        return sendResponse(res, 400, false, "모든 필드가 필수입니다.");
+      if (!postId || !comment) {
+        return sendResponse(
+          res,
+          400,
+          false,
+          "게시물 ID와 댓글 내용은 필수입니다."
+        );
       }
+
+      const userId = req.session.user.id;
 
       const newComment = new Comment({ postId, userId, comment });
       const response = await newComment.create();
@@ -71,6 +77,12 @@ class CommentController {
     try {
       if (!commentId) {
         return sendResponse(res, 400, false, "댓글 ID가 필요합니다.");
+      }
+
+      // 삭제 권한 확인: 작성자만 삭제 가능
+      const comment = await Comment.getById(commentId);
+      if (!comment || comment.userId !== req.session.user.id) {
+        return sendResponse(res, 403, false, "댓글 삭제 권한이 없습니다.");
       }
 
       const response = await Comment.delete(commentId);
