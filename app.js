@@ -14,7 +14,7 @@ const isAuthenticated = require("./middlewares/auth"); // 로그인 여부 미�
 
 app.use(
   cors({
-    origin: ["localhost:5173", "modern9.netlify.app"],
+    origin: ["localhost:5173", "modonggu.site"],
   })
 );
 app.use(bodyParser.json());
