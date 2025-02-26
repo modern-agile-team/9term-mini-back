@@ -39,9 +39,12 @@ const login = async (req, res) => {
       return sendResponse(res, 401, false, response.msg || "로그인 실패");
     }
 
+    console.log("Login response:", response); // 로그인 응답 데이터 확인
+
     req.session.user = {
       id: response.id,
       name: response.name,
+      email: response.email,
     };
 
     req.session.save((err) => {
@@ -54,6 +57,7 @@ const login = async (req, res) => {
           "세션 저장 중 오류가 발생했습니다."
         );
       }
+
       return sendResponse(res, 200, true, "로그인 성공", {
         user: { email: response.email },
       });
