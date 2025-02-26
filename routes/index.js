@@ -23,7 +23,7 @@ router.post("/api/posts", isAuthenticated, validatePost, postCtrl.createPost); /
 router.get("/api/posts", postCtrl.getAllPosts); // 게시물 조회
 router.patch(
   "/api/posts/:id",
-  isAuthenticated,
+  isAu  thenticated,
   validatePost,
   postCtrl.updatePost
 ); // 게시물 수정
