@@ -23,7 +23,12 @@ class User {
         return { success: false, msg: "비밀번호를 다시 입력해주세요." };
       }
 
-      return { success: true, email: userData.email }; // 로그인 성공
+      return {
+        success: true,
+        email: userData.email,
+        id: userData.id,
+        name: userData.name,
+      }; // 로그인 성공
     } catch (err) {
       return { success: false, err }; // 에러 처리
     }
