@@ -47,20 +47,6 @@ app.use(
     },
   })
 ); // 세션 설정 확인
-app.get("/session-test", (req, res) => {
-  if (req.session) {
-    console.log("Session exists:", req.session);
-    if (req.session.user) {
-      console.log("User data:", req.session.user);
-    } else {
-      console.log("No user data in session");
-    }
-    res.send("Session exists");
-  } else {
-    console.log("No session");
-    res.send("No session");
-  }
-});
 
 app.use("/", router);
 
