@@ -9,15 +9,14 @@ const sendResponse = (res, statusCode, success, message, data = null) => {
 
 const toggleLike = async (req, res) => {
     try {
-        const { post_id } = req.params;
-        const user = req.session.user;
+        const { id } = req.params;
+        const userId = req.session.user.id;
 
-        if (!user || !user.user_id) {
+        if (!userId) {
             return sendResponse(res, 401, false, "로그인이 필요합니다.");
         }
 
-        const { user_id } = user;
-        const like = new Like(post_id, user_id);
+        const like = new Like(id, userId);
         const result = await like.toggleLike();
 
         return sendResponse(res, 200, true, result.message, { liked: result.liked });
@@ -29,8 +28,8 @@ const toggleLike = async (req, res) => {
 
 const getLikeCount = async (req, res) => {
     try {
-        const { post_id } = req.params;
-        const likeCount = await Like.getLikeCount(post_id);
+        const { id } = req.params;
+        const likeCount = await Like.getLikeCount(id);
 
         return sendResponse(res, 200, true, "좋아요 개수 조회 성공", { likeCount });
     } catch (err) {

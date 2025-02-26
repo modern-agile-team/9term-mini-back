@@ -23,4 +23,7 @@ router.get("/api/posts", postCtrl.getAllPosts); // 게시물 조회
 router.patch("/api/posts/:id", isAuthenticated, validatePost, postCtrl.updatePost); // 게시물 수정
 router.delete("/api/posts/:id", isAuthenticated, postCtrl.deletePost); // 게시물 삭제
 
+router.post('/api/posts/:id/like', isAuthenticated, likeCtrl.toggleLike);
+router.get('/api/posts/:id/like', likeCtrl.getLikeCount);
+
 module.exports = router;
