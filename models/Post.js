@@ -1,32 +1,39 @@
 const PostStorage = require('../storages/postStorage');
 
 class Post {
-    constructor({ content, post_img }, user_id) {
-        this.user_id = user_id;
+    constructor({ content, postImg }, userId, existingImg) {
+        this.userId = userId;
         this.content = content;
-        this.post_img = post_img;
+        this.postImg = postImg || existingImg;
     }
-
+    
     static async getAllPosts() {
         return PostStorage.getAllPosts();   
     }
-    
+
+    static async getPost(postId) {
+        return PostStorage.getPost(postId);
+    }
+
     // 게시물 생성
     async createPost() {
-        const postData = { user_id: this.user_id, content: this.content, post_img: this.post_img };
+        const postData = { userId: this.userId, content: this.content, postImg: this.postImg };
         return PostStorage.createPost(postData);
     }
 
     // 게시물 수정
-    async updatePost(post_id) {
-        const postData = { post_id, content: this.content, post_img: this.post_img };
-        return PostStorage.updatePost(post_id, postData);
+    async updatePost(postId) {
+        const postData = { content: this.content, postImg: this.postImg };
+        return PostStorage.updatePost(postId, this.userId, postData);
     }
 
     // 게시물 삭제
-    static async deletePost(post_id) {
-        return PostStorage.deletePost(post_id);
+    static async deletePost(postId, userId) {
+        return PostStorage.deletePost(postId, userId);
     }
+
+   
 }
+
 
 module.exports = Post;

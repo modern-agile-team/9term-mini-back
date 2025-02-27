@@ -14,7 +14,8 @@ const isAuthenticated = require("./middlewares/auth"); // 로그인 여부 미�
 
 app.use(
   cors({
-    origin: ["localhost:5173", "modonggu.site"],
+    origin: ["http://localhost:5173", "https://modonggu.site"],
+    credentials: true,
   })
 );
 app.use(bodyParser.json());

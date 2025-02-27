@@ -1,11 +1,17 @@
 const db = require('../config/db');
 
 class PostStorage {
+    static async getPost(postId) {
+        const query = 'SELECT * FROM posts WHERE id =?';
+        const [rows] = await db.execute(query, [postId]);
+        return rows[0];
+    }
+
     // 게시물 생성
-    static async createPost({ user_id, content, post_img }) {
+    static async createPost({ userId, content, postImg }) {
         try {
-            const query = `INSERT INTO posts (user_id, content, post_img, created_at) VALUES (?, ?, ?, NOW())`;
-            const [result] = await db.execute(query, [user_id, content, post_img]);
+            const query = `INSERT INTO posts (user_id, content, post_img) VALUES (?, ?, ?)`;
+            const [result] = await db.execute(query, [userId, content, postImg]);
             return result.insertId;
         } catch (err) {
             console.error("Database insert error:", err);
@@ -34,7 +40,7 @@ class PostStorage {
     }
 
     // 게시물 수정
-    static async updatePost (post_id, user_id, updates) {
+    static async updatePost (postId, userId, updates) {
         try { 
             const fields = [];
             const values = [];
@@ -43,15 +49,15 @@ class PostStorage {
                 fields.push("content = ?");
                 values.push(updates.content);
             }
-            if (updates.post_img) {
+            if (updates.postImg) {
                 fields.push("post_img = ?");
-                values.push(updates.post_img);
+                values.push(updates.postImg);
             }
             if (fields.length === 0) {
                 return true; // 아무 변경이 없어도 성공
             }
 
-            values.push(post_id, user_id);
+            values.push(postId, userId);
             const query = `UPDATE posts SET ${fields.join(", ")} WHERE id = ? AND user_id = ?`;
             const [result] = await db.execute(query, values);
 
@@ -63,10 +69,10 @@ class PostStorage {
     }
 
     // 게시물 삭제
-    static async deletePost(post_id, user_id) {
+    static async deletePost(postId, userId) {
         try {
             const query = `DELETE FROM posts WHERE id = ? AND user_id = ?`;
-            const [result] = await db.execute(query, [post_id, user_id]);
+            const [result] = await db.execute(query, [postId, userId]);
 
             return result.affectedRows > 0; // 삭제된 게시물 확인
         } catch (err) {
