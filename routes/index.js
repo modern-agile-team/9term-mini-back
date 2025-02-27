@@ -12,18 +12,17 @@ router.post("/api/login", userCtrl.login);
 router.post("/api/register", userCtrl.register);
 router.post("/api/logout", userCtrl.logout);
 
-router.post("/api/posts/:postId/comments", commentCtrl.createComment);
-router.get("/api/posts/:postId/comments", commentCtrl.getComments);
-router.delete(
-  "/api/posts/:postId/comments/:commentId",
-  commentCtrl.deleteComment
-);
+router.get("/api/users/me", userCtrl.userInfo);
+
+router.post("/api/posts/:id/comments", commentCtrl.createComment);
+router.get("/api/posts/:id/comments", commentCtrl.getComments);
+router.delete("/api/posts/:id/comments/:commentId", commentCtrl.deleteComment);
 
 router.post("/api/posts", isAuthenticated, validatePost, postCtrl.createPost); // 게시물 생성
 router.get("/api/posts", postCtrl.getAllPosts); // 게시물 조회
 router.patch(
   "/api/posts/:id",
-  isAu  thenticated,
+  isAuthenticated,
   validatePost,
   postCtrl.updatePost
 ); // 게시물 수정

@@ -15,8 +15,19 @@ class UserStorage {
     }
   }
 
+  static async getUserInfo(email) {
+    try {
+      const query = "SELECT * FROM users WHERE email = ?";
+      const [results] = await db.query(query, [email]);
+      return results[0] || null; // 첫 번째 결과 반환 (없으면 null)
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw new Error("데이터베이스 조회 중 오류가 발생했습니다.");
+    }
+  }
+
   // 사용자 생성
-  static async createUser(email, pwd, profile_image) {
+  static async createUser(email, pwd, profileImage) {
     try {
       const query = `
         INSERT INTO users (email, pwd, profile_image, name) 
@@ -26,7 +37,7 @@ class UserStorage {
       const [results] = await db.query(query, [
         email,
         pwd,
-        profile_image,
+        profileImage,
         email,
       ]);
       return { success: true };
