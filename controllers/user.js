@@ -10,18 +10,6 @@ const sendResponse = (res, statusCode, success, message, data = null) => {
   return res.status(statusCode).json(response);
 };
 
-const userInfo = async (req, res) => {
-  try {
-    const userEmail = req.session.user.email;
-    const user = new User(userEmail);
-    const userData = await user.getUserInfo();
-    return sendResponse(res, 200, true, "사용자 정보 조회 성공", userData);
-  } catch (error) {
-    console.error("사용자 정보 조회 중 오류:", error);
-    return sendResponse(res, 500, false, "서버 오류가 발생했습니다.");
-  }
-};
-
 const logout = (req, res) => {
   if (req.session) {
     req.session.destroy((err) => {
@@ -36,7 +24,6 @@ const logout = (req, res) => {
     return sendResponse(res, 200, true, "이미 로그아웃 상태입니다.");
   }
 };
-
 const login = async (req, res) => {
   try {
     const { email, pwd } = req.body;
@@ -68,7 +55,6 @@ const login = async (req, res) => {
           "세션 저장 중 오류가 발생했습니다."
         );
       }
-      console.log("Login session:", req.session.user.email); // 로그인 응답 데이터 확인
 
       return sendResponse(res, 200, true, "로그인 성공", {
         user: { email: response.email },
@@ -87,7 +73,7 @@ const register = async (req, res) => {
       return sendResponse(res, 400, false, "이메일과 비밀번호는 필수입니다.");
     }
 
-    const existingUser = await UserStorage.getUserByEmail(email);
+    const existingUser = await UserStorage.getUserByEmail({ email });
     if (existingUser) {
       return sendResponse(res, 409, false, "이미 존재하는 이메일입니다.");
     }
@@ -106,4 +92,4 @@ const register = async (req, res) => {
   }
 };
 
-module.exports = { logout, login, register, userInfo };
+module.exports = { logout, login, register };
