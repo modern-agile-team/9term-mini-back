@@ -11,6 +11,7 @@ class UserInfo {
     try {
       const { userEmail } = this.body;
       const userInfo = await userStorage.getUserInfo({ userEmail });
+      console.log(userEmail);
       return userInfo;
     } catch (error) {
       console.error("사용자 정보 조회 중 오류:", error);

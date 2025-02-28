@@ -11,7 +11,7 @@ class User {
   async login() {
     const { email, pwd } = this.body; // email과 pwd 추출
     try {
-      const userData = await userStorage.getUserByEmail(email); // DB에서 사용자 정보 조회
+      const userData = await userStorage.getUserByEmail({ email }); // DB에서 사용자 정보 조회
 
       if (!userData) {
         return { success: false, msg: "존재하지 않는 이메일입니다." };
