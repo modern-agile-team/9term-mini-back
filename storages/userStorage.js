@@ -35,10 +35,10 @@ class UserStorage {
     }
   }
 
-  static async getUserInfo({ email }) {
+  static async getUserInfo({ userEmail }) {
     try {
       const query = "SELECT * FROM users WHERE email = ?";
-      const [results] = await db.query(query, [email]);
+      const [results] = await db.query(query, [userEmail]);
       return results[0] || null;
     } catch (err) {
       console.error("Database query error:", err);

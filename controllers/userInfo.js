@@ -14,6 +14,7 @@ const userInfo = async (req, res) => {
     const userEmail = req.session.user.email;
     const user = new UserInfo({ userEmail }); // 객체로 전달
     const userData = await user.getUserInfo();
+
     return sendResponse(res, 200, true, "사용자 정보 조회 성공", userData);
   } catch (error) {
     console.error("사용자 정보 조회 중 오류:", error);

@@ -15,6 +15,7 @@ router.post("/api/logout", isAuthenticated, userCtrl.logout);
 
 router.get("/api/users/me", isAuthenticated, userInfoCtrl.userInfo);
 router.patch("/api/users/me", isAuthenticated, userInfoCtrl.updateProfile);
+router.delete("/api/users/me", isAuthenticated, userInfoCtrl.deleteProfile);
 
 router.post(
   "/api/posts/:id/comments",
