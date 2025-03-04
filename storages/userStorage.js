@@ -76,6 +76,22 @@ class UserStorage {
       throw new Error("프로필 이미지 삭제 중 오류가 발생했습니다.");
     }
   }
+
+  static async getSessionInfo(sessionId) {
+    try {
+      const query = "SELECT * FROM sessions WHERE session_id = ?";
+      const [results] = await db.execute(query, [sessionId]);
+
+      if (!results || results.length === 0) {
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error("세션 정보 조회 중 오류:", error);
+      throw error;
+    }
+  }
 }
 
 module.exports = UserStorage;
