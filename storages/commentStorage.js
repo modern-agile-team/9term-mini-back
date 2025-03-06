@@ -17,7 +17,7 @@ class CommentStorage {
     }
   }
 
-  static async getByPostId(postId) {
+  static async findAllByPostId(postId) {
     try {
       const query =
         "SELECT * FROM comments WHERE post_id = ? ORDER BY created_at DESC";

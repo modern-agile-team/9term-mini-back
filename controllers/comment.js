@@ -24,6 +24,7 @@ const createComment = async (req, res) => {
     }
 
     const userId = req.session.user.id;
+    console.log(userId);
 
     const newComment = new Comment({ postId, userId, comment });
     const response = await newComment.create();
@@ -52,6 +53,7 @@ const createComment = async (req, res) => {
 
 const getComments = async (req, res) => {
   const { postId } = req.params;
+  console.log(postId);
 
   try {
     if (!postId) {

@@ -4,7 +4,6 @@ const userStorage = require("../storages/userStorage");
 
 module.exports = async function isAuthenticated(req, res, next) {
   try {
-    console.log(req.sessionID);
     if (req.session && req.session.user) {
       // 세션 ID를 사용하여 DB에서 세션 정보 조회
       const isSessionValid = await userStorage.getSessionInfo(req.sessionID);
