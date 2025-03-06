@@ -9,7 +9,6 @@ const likeCtrl = require("../controllers/like.ctrl");
 const isAuthenticated = require("../middlewares/auth"); // 로그인 여부 미들웨어 함수
 const { validatePost } = require("../middlewares/validatePost");
 
-
 router.post("/api/login", userCtrl.login);
 router.post("/api/register", userCtrl.register);
 router.post("/api/logout", userCtrl.logout);
@@ -23,7 +22,7 @@ router.get("/api/posts", postCtrl.getAllPosts); // 게시물 조회
 router.patch("/api/posts/:id", isAuthenticated, validatePost, postCtrl.updatePost); // 게시물 수정
 router.delete("/api/posts/:id", isAuthenticated, postCtrl.deletePost); // 게시물 삭제
 
-router.post('/api/posts/:id/like', isAuthenticated, likeCtrl.toggleLike);
-router.get('/api/posts/:id/like', likeCtrl.getLikeCount);
+router.post("/api/posts/:id/like", isAuthenticated, likeCtrl.toggleLike);
+router.get("/api/posts/:id/like", likeCtrl.getLikeCount);
 
 module.exports = router;
