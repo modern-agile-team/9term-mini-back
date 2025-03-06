@@ -25,4 +25,5 @@ router.delete("/api/posts/:id", isAuthenticated, postCtrl.deletePost); // 게시
 router.post("/api/posts/:id/like", isAuthenticated, likeCtrl.toggleLike);
 router.get("/api/posts/:id/like", likeCtrl.getLikeCount);
 
+router.get("/healthcheck", (req, res) => { return res.status(200) })
 module.exports = router;
