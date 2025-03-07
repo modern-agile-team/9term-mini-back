@@ -5,7 +5,8 @@ const router = express.Router();
 const userCtrl = require("../controllers/user");
 const userInfoCtrl = require("../controllers/userInfo");
 const commentCtrl = require("../controllers/comment");
-const postCtrl = require("../controllers/post.ctrl"); // 게시물 컨트롤러 추
+const postCtrl = require("../controllers/post.ctrl"); // 게시물 컨트롤러 
+const likeCtrl = require("../controllers/like.ctrl"); // 좋아요 컨트롤러
 const isAuthenticated = require("../middlewares/auth"); // 로그인 여부 미들웨어 함수
 const { validatePost } = require("../middlewares/validatePost");
 
@@ -42,5 +43,10 @@ router.patch(
   postCtrl.updatePost
 ); // 게시물 수정
 router.delete("/api/posts/:id", isAuthenticated, postCtrl.deletePost); // 게시물 삭제
+
+router.post("/api/posts/:id/like", isAuthenticated, likeCtrl.toggleLike);
+router.get("/api/posts/:id/like", likeCtrl.getLikeCount);
+
+router.get("/healthcheck", (req, res) => { return res.status(200).json({ status: "OK" }) });
 
 module.exports = router;
