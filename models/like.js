@@ -8,7 +8,6 @@ class Like {
 
     async toggleLike() {
         try {
-            console.log("토글 시작:", this.postId, this.userId);
             const isLiked = await LikeStorage.checkLike(this.postId, this.userId);
 
             if (isLiked) {
