@@ -46,7 +46,7 @@ class UserStorage {
     }
   }
 
-  static async createUser({ email, pwd, profileImage }) {
+  static async createUser({ email, hashedPwd, profileImage }) {
     try {
       const query = `
         INSERT INTO users (email, pwd, profile_image, name) 
@@ -54,7 +54,7 @@ class UserStorage {
       `;
       const [results] = await db.query(query, [
         email,
-        pwd,
+        hashedPwd,
         profileImage,
         email,
       ]);

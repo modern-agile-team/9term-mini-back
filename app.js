@@ -14,13 +14,12 @@ const isAuthenticated = require("./middlewares/auth"); // 로그인 여부 미�
 
 app.use(
   cors({
-
     origin: [
       "http://localhost:5173",
-      "https://modern9.netlify.app", 
-      "https://modonggu.site"
+      "https://localhost:5173",
+      "https://modonggu.site",
+      "https://modern9.netlify.app",
     ],
-
     credentials: true,
   })
 );
@@ -50,10 +49,11 @@ app.use(
     cookie: {
       secure: process.env.NODE_ENV === "production", // production 환경에서만 secure 쿠키 사용
       httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24, // 24시간
+      sameSite: "None",
+      maxAge: 1000 * 60 * 60 * 24,
     },
   })
-); // 세션 설정 확인
+);
 
 app.use("/", router);
 

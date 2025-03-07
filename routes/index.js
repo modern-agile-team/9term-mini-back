@@ -19,13 +19,17 @@ router.patch("/api/users/me", isAuthenticated, userInfoCtrl.updateProfile);
 router.delete("/api/users/me", isAuthenticated, userInfoCtrl.deleteProfile);
 
 router.post(
-  "/api/posts/:id/comments",
+  "/api/posts/:postId/comments",
   isAuthenticated,
   commentCtrl.createComment
 );
-router.get("/api/posts/:id/comments", isAuthenticated, commentCtrl.getComments);
+router.get(
+  "/api/posts/:postId/comments",
+  isAuthenticated,
+  commentCtrl.getComments
+);
 router.delete(
-  "/api/posts/:id/comments/:commentId",
+  "/api/posts/:postId/comments/:commentId",
   isAuthenticated,
   commentCtrl.deleteComment
 );

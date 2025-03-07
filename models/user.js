@@ -46,16 +46,17 @@ class User {
 
   async register() {
     const { email, pwd, profileImage } = this.body;
+    console.log(pwd);
     try {
       // 비밀번호 해싱
       const hashedPwd = await bcrypt.hash(pwd, 10); // saltRounds = 10
 
       // DB에 사용자 저장
-      const response = await userStorage.createUser(
+      const response = await userStorage.createUser({
         email,
         hashedPwd,
-        profileImage
-      );
+        profileImage,
+      });
 
       if (response.success) {
         return { success: true, msg: "회원가입이 완료되었습니다." };

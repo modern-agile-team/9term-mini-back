@@ -36,7 +36,7 @@ const updateProfile = async (req, res) => {
       );
     }
 
-    const newImageUrl = await uploadBase64ImageToS3(profileImg, profileImg);
+    const newImageUrl = await uploadBase64ImageToS3(profileImg, "profileImg");
 
     const user = new UserInfo({ newImageUrl, userEmail });
     const result = await user.updateUserInfo();
