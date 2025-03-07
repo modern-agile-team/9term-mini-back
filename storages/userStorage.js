@@ -39,7 +39,15 @@ class UserStorage {
     try {
       const query = "SELECT * FROM users WHERE email = ?";
       const [results] = await db.query(query, [userEmail]);
-      return results[0] || null;
+      const camelCaseResults = results.map((row) => {
+        return {
+          id: row.id,
+          email: row.email,
+          profileImg: row.profile_image,
+          name: row.name,
+        };
+      });
+      return camelCaseResults || null;
     } catch (err) {
       console.error("Database query error:", err);
       throw new Error("데이터베이스 조회 중 오류가 발생했습니다.");

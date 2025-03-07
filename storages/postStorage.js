@@ -26,7 +26,16 @@ class PostStorage {
             ORDER BY posts.created_at DESC`;
 
       const [results] = await db.query(query);
-      return results;
+      const camelCaseResults = results.map((row) => {
+        return {
+          postId: row.post_id,
+          content: row.content,
+          postImg: row.post_img,
+          createdAt: row.created_at,
+          author: row.author,
+        };
+      });
+      return camelCaseResults;
     } catch (err) {
       console.error("Database query error:", err);
       throw new Error("게시물 조회 중 오류가 발생했습니다.");
@@ -52,7 +61,9 @@ class PostStorage {
       }
 
       values.push(postId, userId);
-      const query = `UPDATE posts SET ${fields.join(", ")} WHERE id = ? AND user_id = ?`;
+      const query = `UPDATE posts SET ${fields.join(
+        ", "
+      )} WHERE id = ? AND user_id = ?`;
       const [result] = await db.execute(query, values);
 
       return result.affectedRows > 0;
