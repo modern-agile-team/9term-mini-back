@@ -5,7 +5,8 @@ const router = express.Router();
 const userCtrl = require("../controllers/user");
 const userInfoCtrl = require("../controllers/userInfo");
 const commentCtrl = require("../controllers/comment");
-const postCtrl = require("../controllers/post.ctrl"); // 게시물 컨트롤러 추
+const postCtrl = require("../controllers/post.ctrl"); // 게시물 컨트롤러 
+const likeCtrl = require("../controllers/like.ctrl"); // 좋아요 컨트롤러
 const isAuthenticated = require("../middlewares/auth"); // 로그인 여부 미들웨어 함수
 const { validatePost } = require("../middlewares/validatePost");
 
