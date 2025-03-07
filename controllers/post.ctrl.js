@@ -35,6 +35,7 @@ const getAllPosts = async (req, res) => {
   } catch (err) {
     console.error("Get all posts error:", err);
     return sendResponse(res, 500, false, "게시물 조회 중 문제가 발생했습니다.");
+
   }
 };
 
