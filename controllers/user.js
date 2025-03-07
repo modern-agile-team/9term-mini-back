@@ -9,6 +9,7 @@ const sendResponse = (res, statusCode, success, message, data = null) => {
   if (data) response.data = data;
   return res.status(statusCode).json(response);
 };
+
 const logout = (req, res) => {
   if (req.session) {
     req.session.destroy((err) => {
@@ -23,7 +24,6 @@ const logout = (req, res) => {
     return sendResponse(res, 200, true, "이미 로그아웃 상태입니다.");
   }
 };
-
 const login = async (req, res) => {
   try {
     const { email, pwd } = req.body;
@@ -38,8 +38,6 @@ const login = async (req, res) => {
     if (!response.success) {
       return sendResponse(res, 401, false, response.msg || "로그인 실패");
     }
-
-    console.log("Login response:", response); // 로그인 응답 데이터 확인
 
     req.session.user = {
       id: response.id,
@@ -75,7 +73,7 @@ const register = async (req, res) => {
       return sendResponse(res, 400, false, "이메일과 비밀번호는 필수입니다.");
     }
 
-    const existingUser = await UserStorage.getUserByEmail(email);
+    const existingUser = await UserStorage.getUserByEmail({ email });
     if (existingUser) {
       return sendResponse(res, 409, false, "이미 존재하는 이메일입니다.");
     }

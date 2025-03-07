@@ -11,7 +11,7 @@ class User {
   async login() {
     const { email, pwd } = this.body; // email과 pwd 추출
     try {
-      const userData = await userStorage.getUserByEmail(email); // DB에서 사용자 정보 조회
+      const userData = await userStorage.getUserByEmail({ email }); // DB에서 사용자 정보 조회
 
       if (!userData) {
         return { success: false, msg: "존재하지 않는 이메일입니다." };
@@ -34,8 +34,18 @@ class User {
     }
   }
 
+  async getUserInfo() {
+    try {
+      const userInfo = await userStorage.getUserInfo(this.body);
+      return userInfo;
+    } catch (error) {
+      console.error("사용자 정보 조회 중 오류:", error);
+      throw error;
+    }
+  }
+
   async register() {
-    const { email, pwd, profile_image } = this.body;
+    const { email, pwd, profileImage } = this.body;
     try {
       // 비밀번호 해싱
       const hashedPwd = await bcrypt.hash(pwd, 10); // saltRounds = 10
@@ -44,7 +54,7 @@ class User {
       const response = await userStorage.createUser(
         email,
         hashedPwd,
-        profile_image
+        profileImage
       );
 
       if (response.success) {

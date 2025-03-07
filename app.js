@@ -14,11 +14,13 @@ const isAuthenticated = require("./middlewares/auth"); // 로그인 여부 미�
 
 app.use(
   cors({
+
     origin: [
       "http://localhost:5173",
       "https://modern9.netlify.app", 
       "https://www.modonggu.site"
     ],
+
     credentials: true,
   })
 );
