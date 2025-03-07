@@ -17,7 +17,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       "https://modern9.netlify.app", 
-      "https://www.modonggu.site"
+      "https://modonggu.site"
     ],
     credentials: true,
   })
@@ -46,8 +46,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      //secure: process.env.NODE_ENV === "production", // production 환경에서만 secure 쿠키 사용
-      secure: true,
+      secure: process.env.NODE_ENV === "production", // production 환경에서만 secure 쿠키 사용
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24, // 24시간
     },
