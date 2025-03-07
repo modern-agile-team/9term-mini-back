@@ -82,7 +82,7 @@ const deleteComment = async (req, res) => {
     }
 
     // 삭제 권한 확인: 작성자만 삭제 가능
-    const comment = await Comment.getById(commentId);
+    const comment = await Comment.getByPostId(commentId);
     if (!comment || comment.userId !== req.session.user.id) {
       return sendResponse(res, 403, false, "댓글 삭제 권한이 없습니다.");
     }
