@@ -12,6 +12,8 @@ const session = require("express-session");
 const MySQLStore = require("express-mysql-session")(session);
 const isAuthenticated = require("./middlewares/auth"); // 로그인 여부 미들웨어 함수
 
+app.set("trust proxy", 1); // ALB 뒤에서 실행 시 필요
+
 app.use(
   cors({
     origin: [
